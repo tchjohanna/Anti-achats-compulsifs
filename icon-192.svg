@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="40" fill="#0f172a"/>
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <defs>
+    <radialGradient id="bg" cx="30%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+  </defs>
+  <!-- Shopping cart crossed -->
+  <g transform="translate(96,96)">
+    <!-- Cart body -->
+    <path d="M-38,-20 L-28,-20 L-18,20 L22,20 L30,-8 L-14,-8" 
+          fill="none" stroke="#38bdf8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Wheels -->
+    <circle cx="-10" cy="28" r="6" fill="#38bdf8"/>
+    <circle cx="18" cy="28" r="6" fill="#38bdf8"/>
+    <!-- Cross/block -->
+    <line x1="18" y1="-28" x2="42" y2="-4" stroke="#f97373" stroke-width="8" stroke-linecap="round"/>
+    <line x1="42" y1="-28" x2="18" y2="-4" stroke="#f97373" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>

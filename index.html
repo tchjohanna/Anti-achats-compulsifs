@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anti-achats compulsifs</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="description" content="6 mini-outils pour casser l'impulsion d'achat sans te juger.">
+  <meta name="theme-color" content="#38bdf8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Anti-achats">
+  <link rel="apple-touch-icon" href="./icons/icon-192.svg">
+  <link rel="manifest" href="./manifest.json">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.12);
+      --accent-mid: rgba(56,189,248,0.25);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+      --radius: 16px;
+      --shadow: 0 20px 50px rgba(0,0,0,0.5);
+      --border: rgba(148,163,184,0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 20% 10%, #1e3a5f 0%, #0f172a 40%, #020617 100%);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      padding: 20px 16px 40px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-top: 8px;
+    }
+
+    .header-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 4px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #38bdf8, #7dd3fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 360px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: linear-gradient(145deg, rgba(17,24,39,0.97), rgba(15,23,42,0.9));
+      border-radius: var(--radius);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, var(--accent-soft), transparent 65%);
+      pointer-events: none;
+    }
+
+    .card-inner { position: relative; z-index: 1; }
+
+    .pill {
+      font-size: 0.63rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      font-size: 0.62rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.25);
+      color: var(--accent);
+      margin-left: auto;
+      white-space: nowrap;
+      background: rgba(56,189,248,0.06);
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border-radius: 999px;
+      padding: 7px 14px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+      border-color: var(--accent);
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #22d3ee);
+      border-color: transparent;
+      color: #03111e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(34,211,238,0.35);
+      border-color: transparent;
+    }
+
+    .btn-ghost { background: transparent; }
+
+    .btn-sm { padding: 5px 11px; font-size: 0.76rem; }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* ── Ghost cart inline input ── */
+    .ghost-input-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .ghost-input {
+      flex: 1;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.85);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .ghost-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56,189,248,0.2);
+    }
+
+    .ghost-input::placeholder { color: var(--muted); }
+
+    /* ── Ghost list ── */
+    .ghost-list {
+      list-style: none;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ghost-list::-webkit-scrollbar { width: 4px; }
+    .ghost-list::-webkit-scrollbar-track { background: transparent; }
+    .ghost-list::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.3); border-radius: 2px; }
+
+    .ghost-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-mid);
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: 0.77rem;
+      color: var(--text);
+      animation: slideIn 0.2s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .ghost-item-del {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0 2px;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+
+    .ghost-item-del:hover { color: var(--danger); }
+
+    /* ── Timer ── */
+    .timer-display {
+      font-variant-numeric: tabular-nums;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 8px 0 10px;
+      letter-spacing: 0.04em;
+      transition: color 0.3s;
+    }
+
+    .timer-display.running { color: #7dd3fc; }
+    .timer-display.done    { color: var(--success); }
+
+    .timer-status {
+      font-size: 0.75rem;
+      color: var(--muted);
+      min-height: 18px;
+      margin-top: 6px;
+      line-height: 1.4;
+      transition: opacity 0.3s;
+    }
+
+    /* ── Explore counter ── */
+    .explore-counter {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 6px 0 4px;
+      line-height: 1;
+    }
+
+    .explore-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    /* ── Challenge text ── */
+    .challenge-text {
+      font-size: 0.82rem;
+      color: var(--text);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-mid);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      line-height: 1.5;
+      min-height: 48px;
+      transition: opacity 0.2s;
+    }
+
+    .challenge-text.empty {
+      color: var(--muted);
+      background: transparent;
+      border-color: var(--border);
+    }
+
+    /* ── Textarea ── */
+    .textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.85);
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      line-height: 1.5;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56,189,248,0.2);
+    }
+
+    .textarea::placeholder { color: var(--muted); }
+
+    /* ── Feedback messages ── */
+    .feedback {
+      font-size: 0.75rem;
+      color: var(--success);
+      margin-top: 6px;
+      min-height: 18px;
+      opacity: 0;
+      transform: translateY(2px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .feedback.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Chip ── */
+    .chip {
+      display: inline-flex;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.3);
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* ── Empty state ── */
+    .empty {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Tagline ── */
+    .tagline {
+      font-size: 0.73rem;
+      text-align: center;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    /* ── Install banner ── */
+    #installBanner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(2,132,199,0.18), rgba(34,211,238,0.1));
+      border: 1px solid rgba(56,189,248,0.3);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
+    }
+
+    #installBanner.visible { display: flex; }
+
+    #installBanner p { color: var(--text); flex: 1; }
+    #installBanner p span { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Install banner (shown if installable) -->
+    <div id="installBanner">
+      <p>📲 <span>Installer l'appli</span> sur ton téléphone pour un accès hors-ligne.</p>
+      <button class="btn btn-primary btn-sm" id="installBtn">Installer</button>
+      <button class="btn btn-ghost btn-sm" id="dismissBanner">✕</button>
+    </div>
+
+    <header class="header">
+      <span class="header-icon">🛑</span>
+      <div class="title">Anti-achats compulsifs</div>
+      <div class="subtitle">6 mini-outils pour casser l'impulsion sans te juger.</div>
+    </header>
+
+    <main class="grid">
+
+      <!-- 1. Panier fantôme -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="pill">Stratégie 1 – Panier fantôme 🛒</div>
+          <h2 class="card-title">Sauver l'envie, pas l'argent <span class="badge">Cerveau</span></h2>
+          <p class="card-desc">Note l'envie ici au lieu de l'acheter. Tu gardes la sensation, sans le débit.</p>
+          <div class="ghost-input-row">
+            <input type="text" id="ghostInput" class="ghost-input" placeholder="Article, prix, site…" maxlength="100">
+            <button class="btn btn-primary btn-sm" id="addGhostItem">+ Ajouter</button>
+          </div>
+          <ul class="ghost-list" id="ghostList"></ul>
+          <p class="empty" id="ghostEmpty">Ton panier fantôme est vide pour l'instant. ✨</p>
+        </div>
+      </section>
+
+      <!-- 2. Timer 30 secondes -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="pill">Stratégie 2 – Pause 30 secondes ⏱️</div>
+          <h2 class="card-title">Ralentir l'impulsion <span class="badge">Dopamine</span></h2>
+          <p class="card-desc">30 secondes de pause avant de valider : souvent, l'envie retombe toute seule.</p>
+          <div class="timer-display" id="timerDisplay">00:30</div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-sm" id="startTimer">▶ Lancer</button>
+            <button class="btn btn-ghost btn-sm" id="resetTimer">↺ Réinitialiser</button>
+          </div>
+          <div class="timer-status" id="timerStatus"></div>
+        </div>
+      </section>
+
+      <!-- 3. Geste de remplacement -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="pill">Stratégie 3 – Geste de remplacement ✋</div>
+          <h2 class="card-title">Occuper la main <span class="badge">Geste</span></h2>
+          <p class="card-desc">Au lieu de cliquer, prends un objet en main (galet, stylo, balle…). L'impulsion baisse.</p>
+          <button class="btn btn-primary btn-sm" id="didGesture">✓ Je l'ai fait</button>
+          <div id="gestureStatus" class="feedback">Bien joué. Tu as remplacé l'impulsion par un geste concret. 💪</div>
+          <p class="chip">L'objectif n'est pas d'être parfaite, juste de casser l'automatisme.</p>
+        </div>
+      </section>
+
+      <!-- 4. Explorer sans acheter -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="pill">Stratégie 4 – Explorer sans acheter 👀</div>
+          <h2 class="card-title">Regarder, puis fermer <span class="badge">Sans dégâts</span></h2>
+          <p class="card-desc">Curiosité OK, achat non obligatoire. Regarde, compare, rêve… puis ferme l'appli.</p>
+          <div class="explore-counter" id="exploreCounter">0</div>
+          <div class="explore-label" id="exploreLabel">fois sans acheter</div>
+          <button class="btn btn-primary btn-sm" id="logExplore">✓ J'ai exploré sans acheter</button>
+          <p class="chip">Chaque "je regarde sans acheter" est une vraie victoire. ✨</p>
+        </div>
+      </section>
+
+      <!-- 5. Mini-défi 5 min -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="pill">Stratégie 5 – Mini-défi 5 min 🧩</div>
+          <h2 class="card-title">Remplacer par une micro-action <span class="badge">Action</span></h2>
+          <p class="card-desc">Quand l'envie monte : petite action de 5 min. Le cerveau passe en "je fais" plutôt que "j'achète".</p>
+          <button class="btn btn-primary btn-sm" id="newChallenge">🎲 Nouveau mini-défi</button>
+          <p id="challengeText" class="challenge-text empty">Clique pour tirer un mini-défi aléatoire.</p>
+        </div>
+      </section>
+
+      <!-- 6. Envies du mois -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="pill">Stratégie 6 – Liste "Envies du mois" 📝</div>
+          <h2 class="card-title">Sélectionner, pas accumuler <span class="badge">Priorités</span></h2>
+          <p class="card-desc">Note toutes tes envies. En fin de mois, tu choisis une seule chose importante. Le reste était de passage.</p>
+          <textarea id="wishlist" class="textarea" placeholder="Ex : Robe bleue 7€ / Chaussettes rigolotes 3€ ..."></textarea>
+          <div class="feedback" id="wishlistStatus">Liste enregistrée. 💡</div>
+        </div>
+      </section>
+
+    </main>
+
+    <p class="tagline">
+      Ce n'est pas toi qui es "nulle" — ce sont des habitudes que tu remplaces par des outils.<br>Un clic après l'autre. 🌱
+    </p>
+  </div>
+
+  <script>
+    // ── LocalStorage helpers ──────────────────────────────────────
+    function save(key, val) {
+      try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+    }
+    function load(key, def) {
+      try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : def; }
+      catch(e) { return def; }
+    }
+
+    // ── Feedback helper ───────────────────────────────────────────
+    function showFeedback(el) {
+      el.classList.add("show");
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove("show"), 2800);
+    }
+
+    // ── PWA : Service Worker ──────────────────────────────────────
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    // ── PWA : Install banner ──────────────────────────────────────
+    let deferredPrompt = null;
+    const installBanner = document.getElementById("installBanner");
+    const installBtn    = document.getElementById("installBtn");
+    const dismissBanner = document.getElementById("dismissBanner");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!load("installDismissed", false)) {
+        installBanner.classList.add("visible");
+      }
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBanner.classList.remove("visible");
+    });
+
+    dismissBanner.addEventListener("click", () => {
+      installBanner.classList.remove("visible");
+      save("installDismissed", true);
+    });
+
+    // ── App init ──────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // ─ 1) Panier fantôme ─────────────────────────────────────
+      const ghostInput = document.getElementById("ghostInput");
+      const ghostBtn   = document.getElementById("addGhostItem");
+      const ghostList  = document.getElementById("ghostList");
+      const ghostEmpty = document.getElementById("ghostEmpty");
+      let ghostItems   = load("ghostCart", []);
+
+      function renderGhost() {
+        ghostList.innerHTML = "";
+        if (!ghostItems.length) {
+          ghostEmpty.style.display = "block";
+          return;
+        }
+        ghostEmpty.style.display = "none";
+        ghostItems.forEach((item, i) => {
+          const li  = document.createElement("li");
+          li.className = "ghost-item";
+          li.innerHTML = `<span>🛒 ${item}</span>
+            <button class="ghost-item-del" data-i="${i}" title="Supprimer">✕</button>`;
+          ghostList.appendChild(li);
+        });
+        ghostList.querySelectorAll(".ghost-item-del").forEach(btn => {
+          btn.addEventListener("click", () => {
+            ghostItems.splice(+btn.dataset.i, 1);
+            save("ghostCart", ghostItems);
+            renderGhost();
+          });
+        });
+      }
+
+      function addGhostItem() {
+        const text = ghostInput.value.trim();
+        if (!text) return;
+        ghostItems.unshift(text);
+        if (ghostItems.length > 30) ghostItems.pop();
+        save("ghostCart", ghostItems);
+        ghostInput.value = "";
+        renderGhost();
+      }
+
+      ghostBtn.addEventListener("click", addGhostItem);
+      ghostInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addGhostItem();
+      });
+
+      renderGhost();
+
+      // ─ 2) Timer 30 secondes ───────────────────────────────────
+      const timerDisplay = document.getElementById("timerDisplay");
+      const timerStatus  = document.getElementById("timerStatus");
+      const startTimerBtn = document.getElementById("startTimer");
+      const resetTimerBtn = document.getElementById("resetTimer");
+      let timer = null;
+      let remaining = 30;
+
+      function updateTimerDisplay() {
+        timerDisplay.textContent = "00:" + remaining.toString().padStart(2, "0");
+      }
+
+      function stopTimer(msg) {
+        clearInterval(timer);
+        timer = null;
+        timerStatus.textContent = msg || "";
+      }
+
+      startTimerBtn.addEventListener("click", () => {
+        if (timer) return;
+        remaining = 30;
+        updateTimerDisplay();
+        timerDisplay.className = "timer-display running";
+        timerStatus.textContent = "Respire. Tu décides après le compte à rebours.";
+        startTimerBtn.disabled = true;
+        timer = setInterval(() => {
+          remaining--;
+          updateTimerDisplay();
+          if (remaining <= 0) {
+            timerDisplay.className = "timer-display done";
+            startTimerBtn.disabled = false;
+            stopTimer("La vague est passée. Tu peux choisir en conscience. 🌊");
+          }
+        }, 1000);
+      });
+
+      resetTimerBtn.addEventListener("click", () => {
+        stopTimer("");
+        remaining = 30;
+        timerDisplay.className = "timer-display";
+        startTimerBtn.disabled = false;
+        updateTimerDisplay();
+      });
+
+      updateTimerDisplay();
+
+      // ─ 3) Geste de remplacement ───────────────────────────────
+      document.getElementById("didGesture").addEventListener("click", () => {
+        showFeedback(document.getElementById("gestureStatus"));
+      });
+
+      // ─ 4) Explorer sans acheter ───────────────────────────────
+      const exploreCounter = document.getElementById("exploreCounter");
+      const exploreLabel   = document.getElementById("exploreLabel");
+      let exploreTotal = load("exploreWins", 0);
+
+      function renderExplore() {
+        exploreCounter.textContent = exploreTotal;
+        exploreLabel.textContent = exploreTotal <= 1
+          ? "fois sans acheter"
+          : "fois sans acheter 🎉";
+      }
+
+      document.getElementById("logExplore").addEventListener("click", () => {
+        exploreTotal++;
+        save("exploreWins", exploreTotal);
+        renderExplore();
+      });
+
+      renderExplore();
+
+      // ─ 5) Mini-défis ─────────────────────────────────────────
+      const challengeText = document.getElementById("challengeText");
+      const challenges = [
+        "Ranger un tout petit coin : une étagère, un tiroir, une marche.",
+        "Boire un grand verre d'eau et faire 10 pas.",
+        "Écrire une phrase de gentillesse pour toi dans une note.",
+        "Faire 5 étirements doux en respirant profondément.",
+        "Supprimer 5 mails inutiles ou 5 fichiers dont tu n'as plus besoin.",
+        "Mettre une musique que tu aimes et écouter un couplet.",
+        "Plier ou suspendre 5 vêtements qui traînent.",
+        "Regarder par la fenêtre et nommer 3 choses que tu vois.",
+        "Nettoyer un petit coin : lavabo, table, poignée de porte…",
+        "Envoyer un petit message chaleureux à quelqu'un que tu apprécies.",
+        "Faire une liste de 3 choses que tu possèdes déjà et qui te rendent heureuse.",
+        "Préparer une tasse de thé ou de café et la savourer sans écran."
+      ];
+
+      let lastChallengeIdx = -1;
+      document.getElementById("newChallenge").addEventListener("click", () => {
+        let idx;
+        do { idx = Math.floor(Math.random() * challenges.length); }
+        while (idx === lastChallengeIdx);
+        lastChallengeIdx = idx;
+        challengeText.textContent = challenges[idx];
+        challengeText.classList.remove("empty");
+        challengeText.style.opacity = 0;
+        requestAnimationFrame(() => { challengeText.style.opacity = 1; });
+      });
+
+      // ─ 6) Liste envies du mois ────────────────────────────────
+      const wishlist       = document.getElementById("wishlist");
+      const wishlistStatus = document.getElementById("wishlistStatus");
+
+      wishlist.value = load("wishlistText", "");
+
+      wishlist.addEventListener("input", () => {
+        save("wishlistText", wishlist.value);
+        showFeedback(wishlistStatus);
+      });
+
+    });
+  </script>
+</body>
+</html>
